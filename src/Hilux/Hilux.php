@@ -39,9 +39,12 @@ class Hilux{
         if ($iBucketRate == $this->iBucketMax) {
             return true;
         }
+        if (0 == $iBucketRate) {
+            return false;
+        }
 
         $iEndBukectIndex = $iStartBucketIndex + $iBucketRate;
-        
+        echo $iStartBucketIndex." | ".$iBucketRate." | ".$iEndBukectIndex.PHP_EOL;
 
         return $bRet;
     }
