@@ -9,10 +9,10 @@ function autoload( $sClass ){
     require_once( $sTargetFile );
 }
 spl_autoload_register( 'autoload' );
-
 //require_once "./vendor/autoload.php";
 
 $oHilux = new Hilux\Hilux();
-$oHilux->toggle('test', array(
-    'key' => 123,
+$bToggle = $oHilux->toggle('test', array(
+    'key' => "xoxoxo",
 ));
+var_dump($bToggle);

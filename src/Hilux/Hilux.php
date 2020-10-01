@@ -6,6 +6,7 @@ use Hilux\Lib\Parser;
 class Hilux{
 
     private $iBucketMax = 1000;
+    private $iBucketMin = 0;
     //private $sToggleFile = "";
     public function __construct() {
         //$this->sToggleFile = "./data.json";
@@ -25,11 +26,19 @@ class Hilux{
         $sKeyName = $aParam['key'];
         $iHashNum = Murmurhash::hash3_int($sKeyName);
 
-        $aRules = Parser::getRules($sKeyName);
+        $aRules = Parser::getRules($sToggleName);
         if (!$aRules) {
             return false;
         }
-        //print_r($aRules);
+        print_r($aRules);
+
+        // white-list
+        if (!empty($aRules['white_list']['list'])) {
+            $aWhiteList = $aRules['white_list']['list'];
+            if (in_array($sKeyName, $aWhiteList)) {
+                return true;
+            }
+        }
 
         $iBucketIndex = $iHashNum % $this->iBucketMax;
         $aBucketInfo  = $aRules['bucket_info'];
@@ -44,7 +53,21 @@ class Hilux{
         }
 
         $iEndBukectIndex = $iStartBucketIndex + $iBucketRate;
-        echo $iStartBucketIndex." | ".$iBucketRate." | ".$iEndBukectIndex.PHP_EOL;
+        //echo "hashNum:{$iHashNum} | bucketIndex:{$iBucketIndex} | start:{$iStartBucketIndex} | rate:{$iBucketRate}".PHP_EOL;
+        //echo $iStartBucketIndex." | ".$iBucketRate." | ".$iEndBukectIndex.PHP_EOL;
+        if ($iEndBukectIndex <= $this->iBucketMax) {
+            if ($iBucketIndex >= $iStartBucketIndex && $iBucketIndex <= $iEndBukectIndex) {
+                $bRet = true;
+            } else {
+                $bRet = false;
+            }
+        } else {
+            if ($iBucketIndex >= ($iEndBukectIndex - $this->iBucketMax) && $iBucketIndex <= $iStartBucketIndex) {
+                $bRet = false;
+            } else {
+                $bRet = true;
+            }
+        }
 
         return $bRet;
     }

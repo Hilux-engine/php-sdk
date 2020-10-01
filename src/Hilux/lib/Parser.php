@@ -14,6 +14,9 @@ class Parser{
      * */
     public static function getRules($sKeyName) {
         $sFile = self::$sStorePath.self::$sToggleFile;
+        if (!is_file($sFile)) {
+            return false;
+        }
         $sRuleContent = file_get_contents($sFile);
         return json_decode($sRuleContent, true);
     }
